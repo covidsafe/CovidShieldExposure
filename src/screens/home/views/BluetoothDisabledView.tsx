@@ -24,7 +24,7 @@ export const BluetoothDisabledView = () => {
       </Text>
       <LastCheckedDisplay />
       <Box alignSelf="stretch" marginTop="l">
-        <Button text={i18n.translate('Home.TurnOnBluetooth')} variant="bigFlat" onPress={toSettings} />
+        <Button text={i18n.translate('Home.TurnOnBluetooth')} variant="bigFlatWhite" onPress={toSettings} />
       </Box>
     </BaseHomeView>
   );

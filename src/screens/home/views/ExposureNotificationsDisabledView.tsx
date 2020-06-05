@@ -24,7 +24,7 @@ export const ExposureNotificationsDisabledView = () => {
       </Text>
       <LastCheckedDisplay />
       <Box alignSelf="stretch" marginTop="l">
-        <Button text={i18n.translate('Home.EnableExposureNotificationsCTA')} variant="bigFlat" onPress={toSettings} />
+        <Button text={i18n.translate('Home.EnableExposureNotificationsCTA')} variant="bigFlatWhite" onPress={toSettings} />
       </Box>
     </BaseHomeView>
   );

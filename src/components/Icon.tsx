@@ -20,6 +20,7 @@ import IconLearn from 'assets/icon-learn.svg';
 import IconOffline from 'assets/icon-offline.svg';
 import IconExposureNotificationsDisabled from 'assets/icon-exposure-notifications-disabled.svg';
 import IconExposureNotificationsOff from 'assets/icon-exposure-notifications-off.svg';
+import IconLearnMore from 'assets/icon-learn-more.svg';
 import ProgressCircleEmpty from 'assets/progress-circle-empty.svg';
 import ProgressCircleFilled from 'assets/progress-circle-filled.svg';
 import ShareHeading from 'assets/share-heading.svg';
@@ -27,6 +28,15 @@ import SheetHandleBar from 'assets/sheet-handle-bar.svg';
 import ShieldActive from 'assets/shield-active.svg';
 import ShieldCovid from 'assets/shield-covid.svg';
 import ShieldDisabled from 'assets/shield-disabled.svg';
+
+import CovidSafeLogo from 'assets/covidsafe-logo.svg';
+import UWLogo from 'assets/uw-logo.svg';
+
+import CovidSafeLogoWhite from 'assets/covidsafe-logo-white.svg';
+import UWLogoWhite from 'assets/uw-logo-white.svg';
+
+import {useTheme} from '@shopify/restyle';
+import {Theme} from 'shared/theme';
 
 const ICONS = {
   'icon-back-arrow': IconBackArrow,
@@ -57,6 +67,11 @@ const ICONS = {
   'shield-disabled': ShieldDisabled,
   'shield-active': ShieldActive,
   'shield-covid': ShieldCovid,
+  'covidsafe-logo': CovidSafeLogo,
+  'uw-logo': UWLogo,
+  'covidsafe-logo-white': CovidSafeLogoWhite,
+  'uw-logo-white': UWLogoWhite,
+  'icon-learn-more': IconLearnMore,
 };
 
 type IconName = keyof typeof ICONS;
@@ -64,9 +79,14 @@ type IconName = keyof typeof ICONS;
 export interface IconProps {
   name: IconName;
   size?: number;
+  color?: keyof Theme['colors'];
 }
 
-export const Icon = ({name, size = 24}: IconProps) => {
+export const Icon = ({name, size = 24, color}: IconProps) => {
+  const theme = useTheme<Theme>();
   const IconImpl = ICONS[name];
-  return IconImpl ? <IconImpl width={size} height={size} /> : null;
+  const iconColor = color && theme.colors[color] || theme.colors.overlayIcon;
+  return IconImpl ? <IconImpl width={size} height={size} style={{
+    color: iconColor,
+  }} /> : null;
 };

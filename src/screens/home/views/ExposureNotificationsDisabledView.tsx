@@ -28,7 +28,7 @@ export const ExposureNotificationsDisabledView = () => {
       <Box alignSelf="stretch" marginTop="l">
         <Button
           text={i18n.translate('Home.EnableExposureNotificationsCTA')}
-          variant="bigFlat"
+          variant="bigFlatWhite"
           onPress={enableExposureNotifications}
         />
       </Box>

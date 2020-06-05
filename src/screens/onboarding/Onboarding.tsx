@@ -1,7 +1,7 @@
 import React, {useCallback, useRef, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {useI18n} from '@shopify/react-i18n';
-import {Box, Button, Header, LanguageToggle, ProgressCircles} from 'components';
+import {Box, Button, Header, ProgressCircles} from 'components';
 import {LayoutChangeEvent, LayoutRectangle, StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Carousel, {CarouselStatic} from 'react-native-snap-carousel';
@@ -71,7 +71,6 @@ export const OnboardingScreen = () => {
   const isEnd = currentIndex === contentData.length - 1;
 
   const BackButton = <Button text={i18n.translate('Onboarding.ActionBack')} variant="subduedText" onPress={prevItem} />;
-  const LanguageButton = <LanguageToggle />;
 
   const [layout, setLayout] = useState<LayoutRectangle | undefined>();
   const onLayout = useCallback(({nativeEvent: {layout}}: LayoutChangeEvent) => {
@@ -96,7 +95,7 @@ export const OnboardingScreen = () => {
           )}
         </Box>
         <Box flexDirection="row" padding="l">
-          <Box flex={1}>{isStart ? LanguageButton : BackButton}</Box>
+          <Box flex={1}>{!isStart && BackButton}</Box>
           <Box flex={1} justifyContent="center">
             <ProgressCircles alignSelf="center" numberOfSteps={contentData.length} activeStep={currentIndex + 1} />
           </Box>

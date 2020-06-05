@@ -41,7 +41,7 @@ export const InfoShareView = () => {
         <InfoShareItem
           onPress={onSymptomps}
           text={i18n.translate('Info.CheckSymptoms')}
-          icon="icon-external-arrow"
+          icon="icon-chevron"
           accessibilityLabel={i18n.translate('Info.CheckSymptoms')}
           accessibilityRole="link"
           accessibilityHint={i18n.translate('Home.ExternalLinkHint')}

@@ -23,7 +23,7 @@ export const DiagnosedShareView = () => {
         {i18n.translate('Home.DailyShareDetailed')}
       </Text>
       <Box alignSelf="stretch" marginBottom="s">
-        <Button text={i18n.translate('Home.ShareRandomIDsCTA')} variant="bigFlat" onPress={toDataShare} />
+        <Button text={i18n.translate('Home.ShareRandomIDsCTA')} variant="bigFlatWhite" onPress={toDataShare} />
       </Box>
       <Box alignSelf="stretch">
         <Button

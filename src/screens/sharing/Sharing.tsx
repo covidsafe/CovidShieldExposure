@@ -70,7 +70,7 @@ export const SharingScreen = () => {
         <Box flex={1}>
           <ScrollView>
             <Box>
-              <OnboardingBg width="100%" viewBox="0 0 375 300" />
+              <OnboardingBg width="100%" viewBox="0 0 375 325" />
             </Box>
             <Box paddingHorizontal="m">
               <Text variant="bodyText" fontSize={16} color="overlayBodyText">

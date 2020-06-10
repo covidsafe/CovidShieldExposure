@@ -42,12 +42,16 @@ export const InfoShareView = () => {
         <InfoShareItem
           onPress={onSymptomps}
           text={i18n.translate('Info.CheckSymptoms')}
-          icon="icon-external-arrow"
+          icon="icon-chevron"
           accessibilityLabel={i18n.translate('Info.CheckSymptoms')}
           accessibilityRole="link"
           accessibilityHint={i18n.translate('Home.ExternalLinkHint')}
         />
-        <InfoShareItem onPress={onShare} text={i18n.translate('Info.TellAFriend')} icon="icon-share" />
+        <InfoShareItem
+          onPress={onShare}
+          text={i18n.translate('Info.TellAFriend')}
+          icon="icon-chevron"
+        />
         <InfoShareItem onPress={onLearnMore} text={i18n.translate('Info.LearnMore')} icon="icon-chevron" />
       </Box>
       <Box paddingHorizontal="m" borderRadius={10} backgroundColor="infoBlockNeutralBackground" marginTop="m">

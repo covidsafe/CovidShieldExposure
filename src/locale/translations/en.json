@@ -166,8 +166,8 @@
   },
   "BottomSheet": {
     "Collapse": "Close",
-    "OnStatus": "Covid Shield is on, Tap for more information",
-    "OffStatus": "Covid Shield is off, Tap for more information"
+    "OnStatus": "CovidSafe is on, Tap for more information",
+    "OffStatus": "CovidSafe is off, Tap for more information"
   },
   "RegionPicker": {
     "Title": "Select your province or territory",

@@ -19,26 +19,13 @@ export const palette = {
   neutralGrey: '#F4F4F4',
   darkGrey: '#cecece',
   fadedYellow: '#FFF5D9',
-
-  // CovidSafe color palette
-  brandPurple: '#8D55E9',
-  sectionTitle: '#141414',
-  secondaryBodyCopy: '#404040',
-  bodyCopy: '#141414',
-  grayIcon: '#6E6E6E',
-  linkPurple: '#9651F1',
-  lightPurple: '#F6F1FF',
-  warningHigh: '#E83A3A',
 };
 
 const theme = {
   colors: {
-    mainBackground: palette.brandPurple,
+    mainBackground: palette.brandBlue,
     overlayBackground: palette.white,
-    overlaySectionTitle: palette.sectionTitle,
-    overlayBodyText: palette.bodyCopy,
-    overlaySecondaryBodyText: palette.secondaryBodyCopy,
-    overlayIcon: palette.grayIcon,
+    overlayBodyText: palette.bodyBlack,
     fadedBackground: palette.fadedWhite,
     bodyText: palette.white,
     bodyTextFaded: palette.fadedTextWhite,
@@ -48,7 +35,7 @@ const theme = {
     statusError: palette.error,
     errorBackground: palette.errorLight,
     errorText: palette.error,
-    infoBlockBrightBackground: palette.lightPurple,
+    infoBlockBrightBackground: palette.lightBlue,
     infoBlockBrightText: palette.brandBlue,
     infoBlockNeutralBackground: palette.neutralGrey,
     infoBlockNeutralText: palette.bodyBlack,
@@ -125,7 +112,7 @@ const theme = {
   },
   buttonVariants: {
     bigFlat: {
-      color: palette.linkPurple,
+      color: palette.linkBlue,
       height: 52,
       textColor: palette.white,
       fontFamily: 'Nunito',
@@ -139,26 +126,7 @@ const theme = {
     bigFlatWhite: {
       color: palette.white,
       height: 52,
-      textColor: palette.linkPurple,
-      fontFamily: 'Nunito',
-      fontSize: 18,
-      borderWidth: undefined,
-      disabled: {},
-    },
-    bigFlatWhiteOverlay: {
-      color: palette.white,
-      height: 52,
-      textColor: palette.bodyCopy,
-      fontWeight: '600',
-      fontFamily: 'Nunito',
-      fontSize: 18,
-      borderWidth: undefined,
-      disabled: {},
-    },
-    bigFlatRed: {
-      color: palette.warningHigh,
-      height: 52,
-      textColor: palette.white,
+      textColor: palette.linkBlue,
       fontFamily: 'Nunito',
       fontSize: 18,
       borderWidth: undefined,
@@ -185,7 +153,7 @@ const theme = {
     text: {
       color: 'transparent',
       height: 44,
-      textColor: palette.linkPurple,
+      textColor: palette.linkBlue,
       fontFamily: 'Nunito',
       fontSize: 18,
       borderWidth: undefined,

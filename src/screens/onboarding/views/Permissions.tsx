@@ -11,7 +11,7 @@ export const Permissions = () => {
         <Box paddingHorizontal="l" marginTop="m">
           <Text
             variant="bodyTitle"
-            color="overlaySectionTitle"
+            color="overlayBodyText"
             marginHorizontal="l"
             marginBottom="l"
             textAlign="center"

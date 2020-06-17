@@ -38,6 +38,7 @@ export const Start = () => {
         <Box flexDirection="row" alignItems="center" marginBottom="l">
           <Icon size={30} name="icon-learn-more" color="overlayIcon" />
           <Button
+            customStyles={{textAlign: 'left'}}
             text={i18n.translate('OnboardingStart.TutorialAction')}
             variant="bigFlatWhite"
             onPress={() => navigation.navigate('Tutorial')}

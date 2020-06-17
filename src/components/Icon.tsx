@@ -29,10 +29,10 @@ import ShieldActive from 'assets/shield-active.svg';
 import ShieldCovid from 'assets/shield-covid.svg';
 import ShieldDisabled from 'assets/shield-disabled.svg';
 
-import CovidSafeLogo from 'assets/covidsafe-logo.svg';
+import CCExposuresLogo from 'assets/cc-exposures-logo.svg';
 import UWLogo from 'assets/uw-logo.svg';
 
-import CovidSafeLogoWhite from 'assets/covidsafe-logo-white.svg';
+import CCExposuresLogoWhite from 'assets/cc-exposures-logo-white.svg';
 import UWLogoWhite from 'assets/uw-logo-white.svg';
 
 import {useTheme} from '@shopify/restyle';
@@ -67,9 +67,9 @@ const ICONS = {
   'shield-disabled': ShieldDisabled,
   'shield-active': ShieldActive,
   'shield-covid': ShieldCovid,
-  'covidsafe-logo': CovidSafeLogo,
+  'cc-exposures-logo': CCExposuresLogo,
   'uw-logo': UWLogo,
-  'covidsafe-logo-white': CovidSafeLogoWhite,
+  'cc-exposures-logo-white': CCExposuresLogoWhite,
   'uw-logo-white': UWLogoWhite,
   'icon-learn-more': IconLearnMore,
 };

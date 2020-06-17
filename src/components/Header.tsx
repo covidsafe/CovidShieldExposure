@@ -26,14 +26,14 @@ export const Header = ({isOverlay}: HeaderProps) => {
             <Box marginRight="s">
               <Icon size={24} name="uw-logo" />
             </Box>
-            <Icon size={116} name="covidsafe-logo" />
+            <Icon size={116} name="cc-exposures-logo" />
           </Box>
         ) : (
           <Box flexDirection="row" alignItems="center" justifyContent="center" marginVertical='-xl'>
             <Box marginHorizontal="s">
               <Icon size={24} name="uw-logo-white" />
             </Box>
-            <Icon size={116} name="covidsafe-logo-white" />
+            <Icon size={116} name="cc-exposures-logo-white" />
           </Box>
         )
     }

@@ -19,6 +19,7 @@ import {Icon} from './Icon';
 
 export interface ButtonProps {
   text?: string;
+  customStyles?: object;
   onPress: () => void;
   variant: keyof Theme['buttonVariants'];
   color?: keyof Theme['colors'];
@@ -29,6 +30,7 @@ export interface ButtonProps {
 
 export const Button = ({
   text,
+  customStyles,
   onPress,
   variant,
   color: buttonColorName,
@@ -40,6 +42,7 @@ export const Button = ({
   const theme = useTheme<Theme>();
   const variantProps = theme.buttonVariants[variant];
   const disabledProps = disabled ? variantProps.disabled || {} : {};
+  const customStylesProps = customStyles ? customStyles : {};
   const themedStyles = {...variantProps, ...disabledProps};
   const {fontSize, fontWeight, fontFamily, color, borderWidth, height} = (themedStyles as unknown) as TextStyle &
     ViewStyle;
@@ -69,10 +72,10 @@ export const Button = ({
         <ActivityIndicator color={textColor} size="large" />
       ) : (
         <>
-          <Text style={{...styles.content, color: textColor || buttonColor, fontWeight, fontFamily, fontSize}}>
+          <Text style={{...styles.content, ...customStylesProps, color: textColor || buttonColor, fontWeight, fontFamily, fontSize}}>
             {text}
           </Text>
-          {externalLink && <Icon name={externalArrowIcon} />}
+          {externalLink && <Icon name={externalArrowIcon} color={textColor === palette.white ? "bodyText" : ""} />}
         </>
       )}
     </Box>

@@ -20,7 +20,7 @@ export const palette = {
   darkGrey: '#cecece',
   fadedYellow: '#FFF5D9',
 
-  // CommonCircle Exposures color palette
+  // CommonCircle color palette
   brandPurple: '#8D55E9',
   sectionTitle: '#141414',
   secondaryBodyCopy: '#404040',

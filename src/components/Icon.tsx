@@ -30,10 +30,7 @@ import ShieldCovid from 'assets/shield-covid.svg';
 import ShieldDisabled from 'assets/shield-disabled.svg';
 
 import CCExposuresLogo from 'assets/cc-exposures-logo.svg';
-import UWLogo from 'assets/uw-logo.svg';
-
 import CCExposuresLogoWhite from 'assets/cc-exposures-logo-white.svg';
-import UWLogoWhite from 'assets/uw-logo-white.svg';
 
 import {useTheme} from '@shopify/restyle';
 import {Theme} from 'shared/theme';
@@ -68,9 +65,7 @@ const ICONS = {
   'shield-active': ShieldActive,
   'shield-covid': ShieldCovid,
   'cc-exposures-logo': CCExposuresLogo,
-  'uw-logo': UWLogo,
   'cc-exposures-logo-white': CCExposuresLogoWhite,
-  'uw-logo-white': UWLogoWhite,
   'icon-learn-more': IconLearnMore,
 };
 

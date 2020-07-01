@@ -18,7 +18,7 @@ class MainActivity : ReactActivity() {
      * rendering of the component.
      */
     override fun getMainComponentName(): String? {
-        return "CommonCircle Exposures"
+        return "CommonCircle"
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

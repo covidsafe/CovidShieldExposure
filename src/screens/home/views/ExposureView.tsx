@@ -21,7 +21,14 @@ export const ExposureView = () => {
       </Text>
       <LastCheckedDisplay />
       <Box alignSelf="stretch" marginTop="l">
-        <Button text={i18n.translate('Home.SeeGuidance')} variant="bigFlatWhite" externalLink onPress={onAction} />
+        <Button text={'Complete the survey'} variant="bigFlatWhite" externalLink onPress={
+          () => {
+            Linking.openURL("https://redcap.iths.org/surveys/?s=HAR3L8AF9A").catch(err => console.error('An error occurred', err));
+          }
+        } />
+      </Box>
+      <Box alignSelf="stretch" marginTop="l">
+        <Button text={i18n.translate('Home.SeeGuidance')} color="bodyText" variant="bigHollow" externalLink onPress={onAction} />
       </Box>
     </BaseHomeView>
   );

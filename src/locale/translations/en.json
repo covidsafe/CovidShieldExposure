@@ -4,7 +4,7 @@
     "NoExposureDetectedDetailed": "Based on your random IDs, you have not been near someone in the past 14 days who has tested positive for COVID-19.",
     "ExposureDetected": "You have possibly been exposed to COVID-19",
     "ExposureDetectedDetailed": "Based on your random IDs, you have been near someone in the past 14 days who tested positive for COVID-19.",
-    "SeeGuidance": "Read Guidance from the CDC",
+    "SeeGuidance": "Read guidance from the CDC",
     "GuidanceUrl": "https://www.cdc.gov/coronavirus/2019-ncov/index.html",
     "SignalDataShared": "Thank you for helping to slow the spread",
     "SignalDataSharedDetailed": {

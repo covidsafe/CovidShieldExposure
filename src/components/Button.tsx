@@ -75,7 +75,7 @@ export const Button = ({
           <Text style={{...styles.content, ...customStylesProps, color: textColor || buttonColor, fontWeight, fontFamily, fontSize}}>
             {text}
           </Text>
-          {externalLink && <Icon name={externalArrowIcon} color={textColor === palette.white ? "bodyText" : ""} />}
+          {externalLink && <Icon name={externalArrowIcon} color={textColor === palette.white || "bodyText" ? "bodyText" : ""} />}
         </>
       )}
     </Box>

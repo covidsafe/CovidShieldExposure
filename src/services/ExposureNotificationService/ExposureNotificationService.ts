@@ -154,7 +154,7 @@ export class ExposureNotificationService {
     }
 
     const installId = await AppCenter.getInstallId();   // Returned as a string
-    Analytics.trackEvent('Status udpated', { UserID: installId, Status: JSON.stringify(currentStatus) });
+    Analytics.trackEvent('Status', { UserID: installId, Status: JSON.stringify(currentStatus) });
   }
 
   async updateExposureStatus(): Promise<void> {

@@ -4,6 +4,7 @@ import {addDays, daysBetween, periodSinceEpoch} from 'shared/date-fns';
 import {I18n} from '@shopify/react-i18n';
 import {Observable, MapObservable} from 'shared/Observable';
 import Analytics from 'appcenter-analytics';
+import AppCenter from 'appcenter';
 import {BackendInterface, SubmissionKeySet} from '../BackendService';
 
 const SUBMISSION_AUTH_KEYS = 'submissionAuthKeys';
@@ -151,7 +152,9 @@ export class ExposureNotificationService {
         alertBody: this.i18n.translate('Notification.DailyUploadNotificationBody'),
       });
     }
-    Analytics.trackEvent('Status udpated', { Status: JSON.stringify(currentStatus) });
+
+    const installId = await AppCenter.getInstallId();   // Returned as a string
+    Analytics.trackEvent('Status udpated', { UserID: installId, Status: JSON.stringify(currentStatus) });
   }
 
   async updateExposureStatus(): Promise<void> {

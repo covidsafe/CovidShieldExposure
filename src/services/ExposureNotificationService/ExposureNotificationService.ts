@@ -5,6 +5,7 @@ import {I18n} from '@shopify/react-i18n';
 import {Observable, MapObservable} from 'shared/Observable';
 import Analytics from 'appcenter-analytics';
 import AppCenter from 'appcenter';
+
 import {BackendInterface, SubmissionKeySet} from '../BackendService';
 
 const SUBMISSION_AUTH_KEYS = 'submissionAuthKeys';
@@ -80,7 +81,6 @@ export class ExposureNotificationService {
 
   private exposureNotification: typeof ExposureNotification;
   private backendInterface: BackendInterface;
-
   private i18n: I18n;
   private storage: PersistencyProvider;
   private secureStorage: SecurePersistencyProvider;
@@ -156,7 +156,6 @@ export class ExposureNotificationService {
     const installId = await AppCenter.getInstallId();   // Returned as a string
     Analytics.trackEvent('Status', { UserID: installId, Status: JSON.stringify(currentStatus) });
   }
-
   async updateExposureStatus(): Promise<void> {
     if (this.exposureStatusUpdatePromise) return this.exposureStatusUpdatePromise;
     const cleanUpPromise = <T>(input: T): T => {

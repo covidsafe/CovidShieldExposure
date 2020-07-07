@@ -88,3 +88,4 @@ android/app/google-services.json
 
 # Translations
 src/locale/translations/index.js
+android/app/src/main/assets/appcenter-config.json

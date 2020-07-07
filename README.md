@@ -104,7 +104,11 @@ ENVFILE=.env.production yarn run-ios
 ENVFILE=.env.production yarn run-android
 ```
 
-#### 4. Start app in development mode
+#### 4. (for edu.uw.commoncircle.research) App Center config
+
+Add app-secret files for App Center Analytics in the appropriate places, e.g., android/app/src/main/assets/appcenter-config.json for Android. 
+
+#### 5. Start app in development mode
 
 You can now launch the app using the following commands for both iOS and Android.
 

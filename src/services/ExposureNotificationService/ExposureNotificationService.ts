@@ -1,14 +1,21 @@
-import ExposureNotification, {ExposureSummary, Status as SystemStatus} from 'bridge/ExposureNotification';
+import {Platform} from 'react-native';
+import ExposureNotification, {
+  ExposureSummary,
+  Status as SystemStatus,
+  ExposureConfiguration,
+} from 'bridge/ExposureNotification';
 import PushNotification from 'bridge/PushNotification';
 import {addDays, daysBetween, periodSinceEpoch} from 'shared/date-fns';
 import {I18n} from '@shopify/react-i18n';
 import {Observable, MapObservable} from 'shared/Observable';
 import Analytics from 'appcenter-analytics';
 import AppCenter from 'appcenter';
-
 import {BackendInterface, SubmissionKeySet} from '../BackendService';
 
+import defaultExposureConfiguration from './DefaultExposureConfiguration.json';
+
 const SUBMISSION_AUTH_KEYS = 'submissionAuthKeys';
+const EXPOSURE_CONFIGURATION = 'exposureConfiguration';
 
 const SECURE_OPTIONS = {
   sharedPreferencesName: 'covidShieldSharedPreferences',
@@ -81,6 +88,7 @@ export class ExposureNotificationService {
 
   private exposureNotification: typeof ExposureNotification;
   private backendInterface: BackendInterface;
+
   private i18n: I18n;
   private storage: PersistencyProvider;
   private secureStorage: SecurePersistencyProvider;
@@ -144,7 +152,6 @@ export class ExposureNotificationService {
         alertTitle: this.i18n.translate('Notification.ExposedMessageTitle'),
         alertBody: this.i18n.translate('Notification.ExposedMessageBody'),
       });
-
     }
     if (currentStatus.type === 'diagnosed' && currentStatus.needsSubmission) {
       PushNotification.presentLocalNotification({
@@ -192,6 +199,26 @@ export class ExposureNotificationService {
     await this.recordKeySubmission();
   }
 
+  /**
+   * If the exposureConfiguration is not available from the server for some reason,
+   * try and use a previously stored configuration, or use the default configuration bundled with the app.
+   */
+  private async getAlternateExposureConfiguration(): Promise<ExposureConfiguration> {
+    try {
+      const exposureConfigurationStr = await this.secureStorage.getItem(EXPOSURE_CONFIGURATION, SECURE_OPTIONS);
+      if (exposureConfigurationStr) {
+        console.warn('>>> Using previously saved exposureConfiguration');
+        return JSON.parse(exposureConfigurationStr);
+      } else {
+        throw new Error('Unable to use saved exposureConfiguration');
+      }
+    } catch (error) {
+      console.warn('>>> Using default exposureConfiguration', error);
+      return defaultExposureConfiguration;
+    }
+    await this.recordKeySubmission();
+  }
+
   private async recordKeySubmission() {
     const currentStatus = this.exposureStatus.get();
     if (currentStatus.type !== 'diagnosed') return;
@@ -231,7 +258,7 @@ export class ExposureNotificationService {
         const period = runningPeriod;
         yield {keysFileUrl, period};
       } catch (err) {
-        console.log('>>> error while downloading key file:', err);
+        console.log('>>> Error while downloading key file', err);
       }
 
       runningPeriod -= 1;
@@ -239,7 +266,19 @@ export class ExposureNotificationService {
   }
 
   private async performExposureStatusUpdate(): Promise<void> {
-    const exposureConfiguration = await this.backendInterface.getExposureConfiguration();
+    let exposureConfiguration: ExposureConfiguration;
+    try {
+      exposureConfiguration = await this.backendInterface.getExposureConfiguration();
+      const serialized = JSON.stringify(exposureConfiguration);
+      await this.secureStorage.setItem(EXPOSURE_CONFIGURATION, serialized, SECURE_OPTIONS);
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        console.error('>>> JSON Parsing error: Unable to parse downloaded exposureConfiguration', error);
+      } else {
+        console.error('>>> Network error: Unable to download exposureConfiguration', error);
+      }
+      exposureConfiguration = await this.getAlternateExposureConfiguration();
+    }
 
     const finalize = async (status: Partial<ExposureStatus> = {}, lastCheckedPeriod = 0) => {
       const timestamp = new Date().getTime();
@@ -270,7 +309,6 @@ export class ExposureNotificationService {
       return finalize();
     }
 
-    const keysFileUrls: string[] = [];
     const generator = this.keysSinceLastFetch(currentStatus.lastChecked?.period);
     let lastCheckedPeriod = currentStatus.lastChecked?.period;
     while (true) {
@@ -278,20 +316,26 @@ export class ExposureNotificationService {
       if (done) break;
       if (!value) continue;
       const {keysFileUrl, period} = value;
-      lastCheckedPeriod = Math.max(lastCheckedPeriod || 0, period);
-      keysFileUrls.push(keysFileUrl);
-    }
 
-    try {
-      const summary = await this.exposureNotification.detectExposure(exposureConfiguration, keysFileUrls);
-      if (summary.matchedKeyCount > 0) {
-        return finalize(
-          {
-            type: 'exposed',
-            summary,
-          },
-          lastCheckedPeriod,
-        );
+      // Temporarily disable persisting lastCheckPeriod on Android
+      // Ref https://github.com/cds-snc/covid-shield-mobile/issues/453
+      if (Platform.OS !== 'android') {
+        lastCheckedPeriod = Math.max(lastCheckedPeriod || 0, period);
+      }
+
+      try {
+        const summary = await this.exposureNotification.detectExposure(exposureConfiguration, [keysFileUrl]);
+        if (summary.matchedKeyCount > 0) {
+          return finalize(
+            {
+              type: 'exposed',
+              summary,
+            },
+            lastCheckedPeriod,
+          );
+        }
+      } catch (error) {
+        console.log('>>> DetectExposure', error);
       }
     } catch (error) {
       console.log('>>> detectExposure', error);

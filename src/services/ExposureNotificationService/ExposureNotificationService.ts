@@ -8,11 +8,16 @@ import PushNotification from 'bridge/PushNotification';
 import {addDays, daysBetween, periodSinceEpoch} from 'shared/date-fns';
 import {I18n} from '@shopify/react-i18n';
 import {Observable, MapObservable} from 'shared/Observable';
+<<<<<<< HEAD
 import Analytics from 'appcenter-analytics';
 <<<<<<< HEAD
 =======
 import AppCenter from 'appcenter';
 >>>>>>> 23e5ccd3bc3766eeced6290fecaacb2eef21823a
+=======
+import {captureException, captureMessage} from 'shared/log';
+
+>>>>>>> d7bab271ed29d9f6b18cf9a5ddc0b3ccd7d284ff
 import {BackendInterface, SubmissionKeySet} from '../BackendService';
 
 import defaultExposureConfiguration from './DefaultExposureConfiguration.json';
@@ -44,6 +49,7 @@ export type ExposureStatus =
   | {
       type: 'exposed';
       summary: ExposureSummary;
+      notificationSent?: boolean;
       lastChecked?: {
         period: number;
         timestamp: number;
@@ -115,11 +121,6 @@ export class ExposureNotificationService {
     });
   }
 
-  async init() {
-    const exposureStatus = JSON.parse((await this.storage.getItem(EXPOSURE_STATUS)) || 'null');
-    this.exposureStatus.append({...exposureStatus});
-  }
-
   async start(): Promise<void> {
     if (this.starting) {
       return;
@@ -130,15 +131,15 @@ export class ExposureNotificationService {
 
     try {
       await this.exposureNotification.start();
-    } catch (_) {
+    } catch (error) {
+      captureException('Cannot start EN framework', error);
       this.systemStatus.set(SystemStatus.Unknown);
       return;
     }
 
     await this.updateSystemStatus();
-    await this.updateExposureStatus();
-
     this.starting = false;
+    await this.updateExposureStatus();
   }
 
   async updateSystemStatus(): Promise<void> {
@@ -147,21 +148,37 @@ export class ExposureNotificationService {
   }
 
   async updateExposureStatusInBackground() {
-    const lastStatus = this.exposureStatus.get();
-    await this.updateExposureStatus();
-    const currentStatus = this.exposureStatus.get();
-    if (lastStatus.type === 'monitoring' && currentStatus.type === 'exposed') {
-      PushNotification.presentLocalNotification({
-        alertTitle: this.i18n.translate('Notification.ExposedMessageTitle'),
-        alertBody: this.i18n.translate('Notification.ExposedMessageBody'),
-      });
+    await this.init();
+
+    const unobserver = this.exposureStatus.observe(async exposureStatus => {
+      if (exposureStatus.type === 'exposed' && !exposureStatus.notificationSent) {
+        captureMessage('Present exposed notification', {exposureStatus: this.exposureStatus.get()});
+        PushNotification.presentLocalNotification({
+          alertTitle: this.i18n.translate('Notification.ExposedMessageTitle'),
+          alertBody: this.i18n.translate('Notification.ExposedMessageBody'),
+        });
+        await this.exposureStatus.append({
+          notificationSent: true,
+        });
+      }
+      if (exposureStatus.type === 'diagnosed' && exposureStatus.needsSubmission) {
+        captureMessage('Present daily upload notification', {exposureStatus: this.exposureStatus.get()});
+        PushNotification.presentLocalNotification({
+          alertTitle: this.i18n.translate('Notification.DailyUploadNotificationTitle'),
+          alertBody: this.i18n.translate('Notification.DailyUploadNotificationBody'),
+        });
+      }
+    });
+
+    try {
+      captureMessage('updateExposureStatusInBackground', {exposureStatus: this.exposureStatus.get()});
+      await this.processPendingExposureSummary();
+      await this.updateExposureStatus();
+      captureMessage('updatedExposureStatusInBackground', {exposureStatus: this.exposureStatus.get()});
+    } catch (error) {
+      captureException('updateExposureStatusInBackground', error);
     }
-    if (currentStatus.type === 'diagnosed' && currentStatus.needsSubmission) {
-      PushNotification.presentLocalNotification({
-        alertTitle: this.i18n.translate('Notification.DailyUploadNotificationTitle'),
-        alertBody: this.i18n.translate('Notification.DailyUploadNotificationBody'),
-      });
-    }
+<<<<<<< HEAD
 <<<<<<< HEAD
     Analytics.trackEvent('Status udpated', { Status: JSON.stringify(currentStatus) });
 =======
@@ -169,6 +186,10 @@ export class ExposureNotificationService {
     const installId = await AppCenter.getInstallId();   // Returned as a string
     Analytics.trackEvent('Status', { UserID: installId, Status: JSON.stringify(currentStatus) });
 >>>>>>> 23e5ccd3bc3766eeced6290fecaacb2eef21823a
+=======
+
+    unobserver();
+>>>>>>> d7bab271ed29d9f6b18cf9a5ddc0b3ccd7d284ff
   }
 
   async updateExposureStatus(): Promise<void> {
@@ -201,10 +222,16 @@ export class ExposureNotificationService {
     }
     const auth = JSON.parse(submissionKeysStr) as SubmissionKeySet;
     const diagnosisKeys = await this.exposureNotification.getTemporaryExposureKeyHistory();
+    captureMessage('fetchAndSubmitKeys', {diagnosisKeys});
     if (diagnosisKeys.length > 0) {
       await this.backendInterface.reportDiagnosisKeys(auth, diagnosisKeys);
     }
     await this.recordKeySubmission();
+  }
+
+  private async init() {
+    const exposureStatus = JSON.parse((await this.storage.getItem(EXPOSURE_STATUS)) || 'null');
+    this.exposureStatus.append({...exposureStatus});
   }
 
   /**
@@ -215,13 +242,12 @@ export class ExposureNotificationService {
     try {
       const exposureConfigurationStr = await this.secureStorage.getItem(EXPOSURE_CONFIGURATION, SECURE_OPTIONS);
       if (exposureConfigurationStr) {
-        console.warn('>>> Using previously saved exposureConfiguration');
         return JSON.parse(exposureConfigurationStr);
       } else {
         throw new Error('Unable to use saved exposureConfiguration');
       }
     } catch (error) {
-      console.warn('>>> Using default exposureConfiguration', error);
+      captureException('Using default exposureConfiguration', error);
       return defaultExposureConfiguration;
     }
     await this.recordKeySubmission();
@@ -265,8 +291,8 @@ export class ExposureNotificationService {
         const keysFileUrl = await this.backendInterface.retrieveDiagnosisKeys(runningPeriod);
         const period = runningPeriod;
         yield {keysFileUrl, period};
-      } catch (err) {
-        console.log('>>> Error while downloading key file', err);
+      } catch (error) {
+        captureException('Error while downloading key file', error);
       }
 
       runningPeriod -= 1;
@@ -281,14 +307,15 @@ export class ExposureNotificationService {
       await this.secureStorage.setItem(EXPOSURE_CONFIGURATION, serialized, SECURE_OPTIONS);
     } catch (error) {
       if (error instanceof SyntaxError) {
-        console.error('>>> JSON Parsing error: Unable to parse downloaded exposureConfiguration', error);
+        captureException('JSON Parsing Error: Unable to parse downloaded exposureConfiguration', error);
       } else {
-        console.error('>>> Network error: Unable to download exposureConfiguration', error);
+        captureException('Network Error: Unable to download exposureConfiguration.', error);
       }
       exposureConfiguration = await this.getAlternateExposureConfiguration();
     }
 
     const finalize = async (status: Partial<ExposureStatus> = {}, lastCheckedPeriod = 0) => {
+      const previousExposureStatus = this.exposureStatus.get();
       const timestamp = new Date().getTime();
       this.exposureStatus.append({
         ...status,
@@ -296,6 +323,11 @@ export class ExposureNotificationService {
           timestamp,
           period: lastCheckedPeriod,
         },
+      });
+      const currentExposureStatus = this.exposureStatus.get();
+      captureMessage('finalize', {
+        previousExposureStatus,
+        currentExposureStatus,
       });
     };
 
@@ -317,6 +349,7 @@ export class ExposureNotificationService {
       return finalize();
     }
 
+    const keysFileUrls: string[] = [];
     const generator = this.keysSinceLastFetch(currentStatus.lastChecked?.period);
     let lastCheckedPeriod = currentStatus.lastChecked?.period;
     while (true) {
@@ -324,31 +357,58 @@ export class ExposureNotificationService {
       if (done) break;
       if (!value) continue;
       const {keysFileUrl, period} = value;
+      keysFileUrls.push(keysFileUrl);
 
       // Temporarily disable persisting lastCheckPeriod on Android
       // Ref https://github.com/cds-snc/covid-shield-mobile/issues/453
       if (Platform.OS !== 'android') {
         lastCheckedPeriod = Math.max(lastCheckedPeriod || 0, period);
       }
+    }
 
-      try {
-        const summary = await this.exposureNotification.detectExposure(exposureConfiguration, [keysFileUrl]);
-        if (summary.matchedKeyCount > 0) {
-          return finalize(
-            {
-              type: 'exposed',
-              summary,
-            },
-            lastCheckedPeriod,
-          );
-        }
-      } catch (error) {
-        console.log('>>> DetectExposure', error);
+    captureMessage('performExposureStatusUpdate', {
+      keysFileUrls,
+      lastCheckedPeriod,
+      exposureConfiguration,
+    });
+
+    try {
+      const summary = await this.exposureNotification.detectExposure(exposureConfiguration, keysFileUrls);
+      captureMessage('summary', {summary});
+      if (summary.matchedKeyCount > 0) {
+        return finalize(
+          {
+            type: 'exposed',
+            summary,
+          },
+          lastCheckedPeriod,
+        );
       }
     } catch (error) {
+<<<<<<< HEAD
       console.log('>>> detectExposure', error);
+=======
+      captureException('performExposureStatusUpdate', error);
+>>>>>>> d7bab271ed29d9f6b18cf9a5ddc0b3ccd7d284ff
     }
 
     return finalize({}, lastCheckedPeriod);
+  }
+
+  private async processPendingExposureSummary() {
+    const summary = await this.exposureNotification.getPendingExposureSummary();
+    const exposureStatus = this.exposureStatus.get();
+    if (exposureStatus.type === 'diagnosed' || (summary?.matchedKeyCount || 0) <= 0) {
+      return;
+    }
+    const today = new Date();
+    this.exposureStatus.append({
+      type: 'exposed',
+      summary,
+      lastChecked: {
+        timestamp: today.getTime(),
+        period: periodSinceEpoch(today, HOURS_PER_PERIOD),
+      },
+    });
   }
 }

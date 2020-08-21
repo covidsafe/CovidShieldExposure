@@ -8,16 +8,9 @@ import PushNotification from 'bridge/PushNotification';
 import {addDays, daysBetween, periodSinceEpoch} from 'shared/date-fns';
 import {I18n} from '@shopify/react-i18n';
 import {Observable, MapObservable} from 'shared/Observable';
-<<<<<<< HEAD
 import Analytics from 'appcenter-analytics';
-<<<<<<< HEAD
-=======
 import AppCenter from 'appcenter';
->>>>>>> 23e5ccd3bc3766eeced6290fecaacb2eef21823a
-=======
 import {captureException, captureMessage} from 'shared/log';
-
->>>>>>> d7bab271ed29d9f6b18cf9a5ddc0b3ccd7d284ff
 import {BackendInterface, SubmissionKeySet} from '../BackendService';
 
 import defaultExposureConfiguration from './DefaultExposureConfiguration.json';
@@ -178,18 +171,11 @@ export class ExposureNotificationService {
     } catch (error) {
       captureException('updateExposureStatusInBackground', error);
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-    Analytics.trackEvent('Status udpated', { Status: JSON.stringify(currentStatus) });
-=======
 
     const installId = await AppCenter.getInstallId();   // Returned as a string
     Analytics.trackEvent('Status', { UserID: installId, Status: JSON.stringify(currentStatus) });
->>>>>>> 23e5ccd3bc3766eeced6290fecaacb2eef21823a
-=======
 
     unobserver();
->>>>>>> d7bab271ed29d9f6b18cf9a5ddc0b3ccd7d284ff
   }
 
   async updateExposureStatus(): Promise<void> {
@@ -385,11 +371,8 @@ export class ExposureNotificationService {
         );
       }
     } catch (error) {
-<<<<<<< HEAD
       console.log('>>> detectExposure', error);
-=======
       captureException('performExposureStatusUpdate', error);
->>>>>>> d7bab271ed29d9f6b18cf9a5ddc0b3ccd7d284ff
     }
 
     return finalize({}, lastCheckedPeriod);

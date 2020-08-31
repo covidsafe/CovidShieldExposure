@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">CommonCircle</string>
-<<<<<<< HEAD
-=======
     <string name="appCenterCrashes_whenToSendCrashes" moduleConfig="true" translatable="false">DO_NOT_ASK_JAVASCRIPT</string>
     <string name="appCenterAnalytics_whenToEnableAnalytics" moduleConfig="true" translatable="false">ALWAYS_SEND</string>
->>>>>>> 23e5ccd3bc3766eeced6290fecaacb2eef21823a
 </resources>
